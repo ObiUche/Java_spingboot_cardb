@@ -56,26 +56,34 @@ public class SecurityConfig {
 	}
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
-		UrlBasedCorsConfigurationSource source = 
-				new UrlBasedCorsConfigurationSource();
-		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowedOrigins(Arrays.asList("*"));
-		config.setAllowedMethods(Arrays.asList("*"));
-		config.setAllowedHeaders(Arrays.asList("*"));
-		config.setAllowCredentials(false);
-		config.applyPermitDefaultValues();
-		config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-		
-		source.registerCorsConfiguration("/**", config);
-		return source;
-		
-		
+	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	    CorsConfiguration config = new CorsConfiguration();
+	    
+	    // ONLY THIS LINE - remove the duplicate setAllowedOrigins
+	    config.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+	    
+	    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+	    config.setAllowedHeaders(Arrays.asList("*"));
+	    config.setAllowCredentials(true); // ← MUST be true for credentials
+	    config.setMaxAge(3600L); // ← Optional: cache preflight for 1 hour
+	    
+	    source.registerCorsConfiguration("/**", config);
+	    return source;
 	}
 	
 	@Bean
 
 	public SecurityFilterChain filterChain(HttpSecurity http) throws
 		Exception{
+		
+		http.csrf((csrf)-> csrf.disable())
+		.cors(withDefaults())
+		.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
+				 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
+				.anyRequest()
+				.permitAll());
+		
+		/*
 		http.csrf((csrf) -> csrf.disable()) // Disable CRSF for Stateless API
 		.cors(withDefaults()) //Enable Cors for frontend 
 		.sessionManagement((sessionManagement)-> sessionManagement.
@@ -90,7 +98,7 @@ public class SecurityConfig {
 				.exceptionHandling((exceptionHandling) -> exceptionHandling.
 						authenticationEntryPoint(exceptionHandler));
 		
-		
+		*/
 		return http.build();
 		
 		

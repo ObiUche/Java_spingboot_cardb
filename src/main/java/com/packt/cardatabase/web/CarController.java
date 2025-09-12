@@ -16,7 +16,7 @@ public class CarController {
 		this.repository = repository;
 		
 	}
-	@GetMapping("/cars")
+	@GetMapping("/custom-cars")
 	public Iterable<Car> getCars(){
 		return repository.findAll();
 		// Fetch and return cars
