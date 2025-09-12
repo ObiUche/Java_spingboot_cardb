@@ -14,7 +14,13 @@ import com.packt.cardatabase.domain.Car;
 import com.packt.cardatabase.domain.CarRepository;
 import com.packt.cardatabase.domain.Owner;
 import com.packt.cardatabase.domain.OwnerRepository;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
+
+
+
+
+@EnableMethodSecurity
 @SpringBootApplication
 public class CardatabaseApplication implements CommandLineRunner{
 	private static final Logger logger = LoggerFactory.getLogger(

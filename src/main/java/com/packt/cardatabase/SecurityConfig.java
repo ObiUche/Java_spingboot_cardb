@@ -73,16 +73,17 @@ public class SecurityConfig {
 	}
 	
 	@Bean
-	
+
 	public SecurityFilterChain filterChain(HttpSecurity http) throws
 		Exception{
-		http.csrf((csrf) -> csrf.disable())
-		.cors(withDefaults())
+		http.csrf((csrf) -> csrf.disable()) // Disable CRSF for Stateless API
+		.cors(withDefaults()) //Enable Cors for frontend 
 		.sessionManagement((sessionManagement)-> sessionManagement.
 				sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-				.requestMatchers(HttpMethod.POST,"/login")
-				.permitAll()
+						.requestMatchers(HttpMethod.POST,"/login").permitAll()
+						.requestMatchers("/admin/**").hasRole
+						("ADMIN").requestMatchers("/user/**").hasRole("USER")
 				.anyRequest()
 				.authenticated())
 				.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -91,6 +92,7 @@ public class SecurityConfig {
 		
 		
 		return http.build();
+		
 		
 	}
 	
